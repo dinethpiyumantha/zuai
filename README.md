@@ -18,6 +18,74 @@ Send a natural-language prompt, define the shape you expect with a Zod schema, a
 
 ---
 
+## Exports at a Glance
+
+Everything you can import from `zuai` in one table:
+
+```typescript
+import {
+  runStructuredPrompt,       // core function
+  OpenAIProvider,            // built-in provider class
+  AIValidationError,         // custom error class
+  safeJsonParse,             // utility
+  buildInitialPrompt,        // utility
+  buildRepairPrompt,         // utility
+  describeSchema,            // utility
+} from "zuai";
+
+import type {
+  RunStructuredPromptOptions, // options type
+  AIProvider,                 // provider interface
+  OpenAIProviderConfig,       // config type
+} from "zuai";
+```
+
+### Functions
+
+| Name | Signature | Description |
+|---|---|---|
+| `runStructuredPrompt` | `(options: RunStructuredPromptOptions<T>) => Promise<T>` | **Main entry point.** Send a prompt + Zod schema, get back a typed & validated result. Retries automatically on failure. |
+| `safeJsonParse` | `(raw: string) => JsonParseResult` | Parse raw AI text into JSON. Strips markdown fences, finds the outermost `{}`/`[]`, and handles common quirks. Returns `{ ok: true, data }` on success or `{ ok: false, error }` on failure. |
+| `buildInitialPrompt` | `(userPrompt: string, schemaDescription: string) => string` | Build the first prompt sent to the model. Combines your prompt with a JSON-only system instruction and the schema description. |
+| `buildRepairPrompt` | `(originalPrompt: string, previousOutput: string, validationError: string, schemaDescription: string) => string` | Build a retry prompt that includes the model's previous invalid output, the validation errors, and the schema — asking it to return corrected JSON only. |
+| `describeSchema` | `(schema: ZodType) => string` | Convert a Zod schema into a human-readable string (JSON Schema or shape description) suitable for embedding in prompts. |
+
+### Classes
+
+| Name | Description |
+|---|---|
+| `OpenAIProvider` | Built-in `AIProvider` backed by the OpenAI Chat Completions API. Accepts `OpenAIProviderConfig` for model, temperature, maxTokens, and apiKey. |
+| `AIValidationError` | Custom `Error` subclass thrown when all retry attempts are exhausted. Carries `lastRawOutput` (string), `validationIssues` (string[]), and `attempts` (number) for debugging. |
+
+### Interfaces & Types
+
+| Name | Kind | Description |
+|---|---|---|
+| `AIProvider` | `interface` | The provider contract. Implement `complete(prompt: string): Promise<string>` to plug in any LLM backend (Anthropic, Gemini, Ollama, local models, etc.). |
+| `RunStructuredPromptOptions<T>` | `interface` | Options object for `runStructuredPrompt`. Properties: `prompt` (string, required), `schema` (ZodType, required), `maxRetries` (number, default 3), `provider` (AIProvider, default OpenAIProvider). |
+| `OpenAIProviderConfig` | `interface` | Config for `OpenAIProvider`. Properties: `apiKey?` (string), `model?` (string, default `"gpt-4o"`), `temperature?` (number, default `0`), `maxTokens?` (number, default `4096`). |
+| `JsonParseResult` | `type` | Discriminated union returned by `safeJsonParse`: `{ ok: true; data: unknown }` or `{ ok: false; error: string }`. |
+
+### `AIValidationError` Properties
+
+| Property | Type | Description |
+|---|---|---|
+| `message` | `string` | Human-readable summary, e.g. *"AI output failed schema validation after 4 attempt(s)."* |
+| `lastRawOutput` | `string` | The exact raw text the AI returned on its final attempt. |
+| `validationIssues` | `ReadonlyArray<string>` | Array of Zod error messages from the last failed validation (e.g. `["name: Required", "year: Expected number, received string"]`). |
+| `attempts` | `number` | Total number of attempts made (1 initial + retries). If `maxRetries` was 3, this will be 4. |
+
+### `OpenAIProviderConfig` Properties
+
+| Property | Type | Default | Description |
+|---|---|---|---|
+| `apiKey` | `string` | `process.env.OPENAI_API_KEY` | Your OpenAI API key. Falls back to the environment variable if omitted. |
+| `model` | `string` | `"gpt-4o"` | The model identifier to use for completions. |
+| `temperature` | `number` | `0` | Sampling temperature. `0` = deterministic output. |
+| `maxTokens` | `number` | `4096` | Maximum number of tokens to generate per response. |
+
+---
+
 ## Installation
 
 ```bash
