@@ -1,5 +1,6 @@
 # Source & config (not needed in npm package)
 src/
+docs/
 examples/
 tsconfig.json
 .gitignore
