@@ -1,5 +1,5 @@
 {
-  "name": "zuai",
+  "name": "zuai-lib",
   "version": "0.1.0",
   "description": "TypeScript-first AI orchestration utility — get structured, Zod-validated JSON from any LLM",
   "type": "module",

@@ -43,13 +43,13 @@ import {
   buildInitialPrompt,        // utility
   buildRepairPrompt,         // utility
   describeSchema,            // utility
-} from "zuai";
+} from "zuai-lib";
 
 import type {
   RunStructuredPromptOptions, // options type
   AIProvider,                 // provider interface
   OpenAIProviderConfig,       // config type
-} from "zuai";
+} from "zuai-lib";
 ```
 
 ### Functions
@@ -101,7 +101,7 @@ import type {
 ## Installation
 
 ```bash
-npm install zuai
+npm install zuai-lib
 ```
 
 > **Peer dependency:** `zod` >= 4.x must be installed in your project.
@@ -112,7 +112,7 @@ npm install zuai
 
 ```typescript
 import { z } from "zod";
-import { runStructuredPrompt } from "zuai";
+import { runStructuredPrompt } from "zuai-lib";
 
 const result = await runStructuredPrompt({
   prompt: "List 3 popular programming languages with their creators.",
@@ -189,7 +189,7 @@ Implement this single method to plug in **any** LLM backend. The library never t
 Built-in provider for the OpenAI Chat Completions API.
 
 ```typescript
-import { OpenAIProvider } from "zuai";
+import { OpenAIProvider } from "zuai-lib";
 
 const provider = new OpenAIProvider({
   apiKey: "sk-...",       // default: process.env.OPENAI_API_KEY
@@ -213,7 +213,7 @@ const provider = new OpenAIProvider({
 Custom error thrown when validation fails after all retry attempts.
 
 ```typescript
-import { AIValidationError } from "zuai";
+import { AIValidationError } from "zuai-lib";
 
 try {
   const result = await runStructuredPrompt({ ... });
@@ -293,7 +293,7 @@ These are exported for advanced usage, testing, or custom orchestration:
 
 ```typescript
 import { z } from "zod";
-import { runStructuredPrompt } from "zuai";
+import { runStructuredPrompt } from "zuai-lib";
 
 const RecipeSchema = z.object({
   name: z.string(),
@@ -338,7 +338,7 @@ const result = await runStructuredPrompt({
 ### Using a Different Model
 
 ```typescript
-import { OpenAIProvider, runStructuredPrompt } from "zuai";
+import { OpenAIProvider, runStructuredPrompt } from "zuai-lib";
 
 const result = await runStructuredPrompt({
   prompt: "Describe TypeScript in 3 bullet points.",
@@ -356,7 +356,7 @@ const result = await runStructuredPrompt({
 
 ```typescript
 import Anthropic from "@anthropic-ai/sdk";
-import type { AIProvider } from "zuai";
+import type { AIProvider } from "zuai-lib";
 
 class AnthropicProvider implements AIProvider {
   private client: Anthropic;
@@ -391,7 +391,7 @@ const result = await runStructuredPrompt({
 ### Error Handling
 
 ```typescript
-import { runStructuredPrompt, AIValidationError } from "zuai";
+import { runStructuredPrompt, AIValidationError } from "zuai-lib";
 
 try {
   const result = await runStructuredPrompt({

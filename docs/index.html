@@ -148,7 +148,7 @@
       <h2>Installation</h2>
       <div class="install-bar">
         <span class="dollar">$</span>
-        <code>npm install zuai</code>
+        <code>npm install zuai-lib</code>
         <button class="copy-btn">Copy</button>
       </div>
       <div class="callout info">
@@ -160,7 +160,7 @@
     <section id="quick-start">
       <h2>Quick Start</h2>
       <pre><code data-lang="typescript">import { z } from "zod";
-import { runStructuredPrompt } from "zuai";
+import { runStructuredPrompt } from "zuai-lib";
 
 const result = await runStructuredPrompt({
   prompt: "List 3 popular programming languages with their creators.",
@@ -196,13 +196,13 @@ console.log(result.languages);</code></pre>
   buildInitialPrompt,        // utility
   buildRepairPrompt,         // utility
   describeSchema,            // utility
-} from "zuai";
+} from "zuai-lib";
 
 import type {
   RunStructuredPromptOptions, // options type
   AIProvider,                 // provider interface
   OpenAIProviderConfig,       // config type
-} from "zuai";</code></pre>
+} from "zuai-lib";</code></pre>
 
       <h3>Functions</h3>
       <div class="table-wrap">
@@ -333,7 +333,7 @@ import type {
       <h2>OpenAIProvider</h2>
       <p>Built-in provider for the OpenAI Chat Completions API.</p>
 
-      <pre><code data-lang="typescript">import { OpenAIProvider } from "zuai";
+      <pre><code data-lang="typescript">import { OpenAIProvider } from "zuai-lib";
 
 const provider = new OpenAIProvider({
   apiKey: "sk-...",       // default: process.env.OPENAI_API_KEY
@@ -361,7 +361,7 @@ const provider = new OpenAIProvider({
       <h2>AIValidationError</h2>
       <p>Custom error thrown when validation fails after all retry attempts.</p>
 
-      <pre><code data-lang="typescript">import { AIValidationError } from "zuai";
+      <pre><code data-lang="typescript">import { AIValidationError } from "zuai-lib";
 
 try {
   const result = await runStructuredPrompt({ ... });
@@ -451,7 +451,7 @@ try {
 
       <h3>Complex Schema</h3>
       <pre><code data-lang="typescript">import { z } from "zod";
-import { runStructuredPrompt } from "zuai";
+import { runStructuredPrompt } from "zuai-lib";
 
 const RecipeSchema = z.object({
   name: z.string(),
@@ -490,7 +490,7 @@ recipe.steps.forEach((step, i) =&gt; console.log(`  ${i + 1}. ${step}`));</code>
 });</code></pre>
 
       <h3>Using a Different Model</h3>
-      <pre><code data-lang="typescript">import { OpenAIProvider, runStructuredPrompt } from "zuai";
+      <pre><code data-lang="typescript">import { OpenAIProvider, runStructuredPrompt } from "zuai-lib";
 
 const result = await runStructuredPrompt({
   prompt: "Describe TypeScript in 3 bullet points.",
@@ -510,7 +510,7 @@ const result = await runStructuredPrompt({
       <p>Implement the <code>AIProvider</code> interface to plug in any LLM. Here's an example with Anthropic:</p>
 
       <pre><code data-lang="typescript">import Anthropic from "@anthropic-ai/sdk";
-import type { AIProvider } from "zuai";
+import type { AIProvider } from "zuai-lib";
 
 class AnthropicProvider implements AIProvider {
   private client: Anthropic;
@@ -545,7 +545,7 @@ const result = await runStructuredPrompt({
     <!-- Error Handling -->
     <section id="error-handling">
       <h2>Error Handling</h2>
-      <pre><code data-lang="typescript">import { runStructuredPrompt, AIValidationError } from "zuai";
+      <pre><code data-lang="typescript">import { runStructuredPrompt, AIValidationError } from "zuai-lib";
 
 try {
   const result = await runStructuredPrompt({
