@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>zuai — TypeScript-first AI Orchestration</title>
+  <meta name="description" content="Get structured, Zod-validated JSON from any LLM. TypeScript-first AI orchestration utility for Node.js." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script>
+    // Apply theme immediately to prevent flash of wrong theme
+    (function() {
+      var saved = localStorage.getItem('zuai-theme');
+      var theme = saved || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+</head>
+<body>
+
+<!-- ─── Mobile menu button ────────────────────────────────── -->
+<button class="menu-toggle" aria-label="Toggle navigation">☰</button>
+
+<!-- ─── Sidebar ───────────────────────────────────────────── -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <img src="../assets/zuai.svg" alt="zuai" class="sidebar-logo" />
+    <span class="sidebar-title">zuai</span>
+    <div class="sidebar-actions">
+      <span class="sidebar-version">v0.1.0</span>
+      <button class="theme-toggle" aria-label="Toggle light/dark mode" title="Toggle theme">
+        <div class="theme-toggle-track">
+          <div class="theme-toggle-thumb">
+            <span class="theme-icon">🌙</span>
+          </div>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section">
+      <div class="nav-section-title">Getting Started</div>
+      <a href="#hero" class="nav-link active">Introduction</a>
+      <a href="#installation" class="nav-link">Installation</a>
+      <a href="#quick-start" class="nav-link">Quick Start</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">API Reference</div>
+      <a href="#exports" class="nav-link">Exports at a Glance</a>
+      <a href="#run-structured-prompt" class="nav-link">runStructuredPrompt</a>
+      <a href="#ai-provider" class="nav-link">AIProvider Interface</a>
+      <a href="#openai-provider" class="nav-link">OpenAIProvider</a>
+      <a href="#ai-validation-error" class="nav-link">AIValidationError</a>
+      <a href="#utilities" class="nav-link">Utility Exports</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Guides</div>
+      <a href="#how-it-works" class="nav-link">How It Works</a>
+      <a href="#examples" class="nav-link">Examples</a>
+      <a href="#custom-provider" class="nav-link">Custom Provider</a>
+      <a href="#error-handling" class="nav-link">Error Handling</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Project</div>
+      <a href="#project-structure" class="nav-link">Project Structure</a>
+      <a href="#design-principles" class="nav-link">Design Principles</a>
+      <a href="#contributing" class="nav-link">Contributing</a>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <a href="https://github.com/dinethpiyumantha/zuai" target="_blank">GitHub</a>
+    <a href="https://www.npmjs.com/package/zuai" target="_blank">npm</a>
+    <a href="https://github.com/dinethpiyumantha/zuai/blob/main/LICENSE" target="_blank">MIT License</a>
+  </div>
+</aside>
+
+<!-- ─── Main content ──────────────────────────────────────── -->
+<main class="main">
+  <div class="content">
+
+    <!-- Hero -->
+    <section id="hero">
+      <div class="hero">
+        <img src="../assets/zuai.svg" alt="zuai logo" class="hero-logo" />
+        <h1>zuai</h1>
+        <p class="hero-tagline">
+          TypeScript-first AI orchestration utility for Node.js — get structured, Zod-validated JSON from any LLM.
+        </p>
+        <div class="hero-badges">
+          <span class="badge"><span class="dot green"></span> MIT License</span>
+          <span class="badge"><span class="dot purple"></span> TypeScript Strict</span>
+          <span class="badge"><span class="dot blue"></span> Zero &lsquo;any&rsquo; Types</span>
+          <span class="badge"><span class="dot green"></span> v0.1.0</span>
+        </div>
+      </div>
+
+      <p>
+        Send a natural-language prompt, define the shape you expect with a Zod schema, and get back a <strong>fully typed</strong>, <strong>validated</strong> result. If the AI returns malformed or invalid JSON, <code>zuai</code> automatically retries with a repair prompt — no manual parsing, no <code>any</code> types, no guesswork.
+      </p>
+    </section>
+
+    <!-- Features -->
+    <section id="features">
+      <h2>Features</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🎯</div>
+          <h4>Structured Output</h4>
+          <p>Define your expected response shape with Zod; get back <code>z.infer&lt;typeof schema&gt;</code> with full IntelliSense.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔄</div>
+          <h4>Auto-Repair Retries</h4>
+          <p>If the AI returns broken JSON or fails validation, the library sends the errors back to the model and asks it to fix its output.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <h4>Safe JSON Parsing</h4>
+          <p>Strips markdown fences, finds the outermost <code>{}</code>/<code>[]</code>, handles all common AI response quirks.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔌</div>
+          <h4>Provider-Agnostic</h4>
+          <p>Ships with OpenAI out of the box; swap in Anthropic, Gemini, Ollama, or any custom backend with a single method.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <h4>Zero <code>any</code> Types</h4>
+          <p>End-to-end type safety from schema definition to returned data. No casting, no guessing.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🧩</div>
+          <h4>Small &amp; Composable</h4>
+          <p>Each concern (parsing, prompts, retry logic, provider) lives in its own module and can be used independently.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Installation -->
+    <section id="installation">
+      <h2>Installation</h2>
+      <div class="install-bar">
+        <span class="dollar">$</span>
+        <code>npm install zuai</code>
+        <button class="copy-btn">Copy</button>
+      </div>
+      <div class="callout info">
+        <strong>Peer dependency:</strong> <code>zod</code> &gt;= 4.x must be installed in your project.
+      </div>
+    </section>
+
+    <!-- Quick Start -->
+    <section id="quick-start">
+      <h2>Quick Start</h2>
+      <pre><code data-lang="typescript">import { z } from "zod";
+import { runStructuredPrompt } from "zuai";
+
+const result = await runStructuredPrompt({
+  prompt: "List 3 popular programming languages with their creators.",
+  schema: z.object({
+    languages: z.array(
+      z.object({
+        name: z.string(),
+        creator: z.string(),
+        year: z.number(),
+      }),
+    ),
+  }),
+});
+
+// result is fully typed:
+// { languages: { name: string; creator: string; year: number }[] }
+console.log(result.languages);</code></pre>
+
+      <p>Set your API key before running:</p>
+      <pre><code data-lang="bash">export OPENAI_API_KEY="sk-..."</code></pre>
+    </section>
+
+    <!-- Exports at a Glance -->
+    <section id="exports">
+      <h2>Exports at a Glance</h2>
+      <p>Everything you can import from <code>zuai</code>:</p>
+
+      <pre><code data-lang="typescript">import {
+  runStructuredPrompt,       // core function
+  OpenAIProvider,            // built-in provider class
+  AIValidationError,         // custom error class
+  safeJsonParse,             // utility
+  buildInitialPrompt,        // utility
+  buildRepairPrompt,         // utility
+  describeSchema,            // utility
+} from "zuai";
+
+import type {
+  RunStructuredPromptOptions, // options type
+  AIProvider,                 // provider interface
+  OpenAIProviderConfig,       // config type
+} from "zuai";</code></pre>
+
+      <h3>Functions</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Name</th><th>Signature</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>runStructuredPrompt</code></td>
+              <td><code>(options: RunStructuredPromptOptions&lt;T&gt;) =&gt; Promise&lt;T&gt;</code></td>
+              <td><strong>Main entry point.</strong> Send a prompt + Zod schema, get back a typed &amp; validated result. Retries automatically on failure.</td>
+            </tr>
+            <tr>
+              <td><code>safeJsonParse</code></td>
+              <td><code>(raw: string) =&gt; JsonParseResult</code></td>
+              <td>Parse raw AI text into JSON. Strips markdown fences, finds the outermost <code>{}</code>/<code>[]</code>. Returns <code>{ ok: true, data }</code> or <code>{ ok: false, error }</code>.</td>
+            </tr>
+            <tr>
+              <td><code>buildInitialPrompt</code></td>
+              <td><code>(userPrompt, schemaDescription) =&gt; string</code></td>
+              <td>Build the first prompt sent to the model. Combines your prompt with a JSON-only system instruction and the schema description.</td>
+            </tr>
+            <tr>
+              <td><code>buildRepairPrompt</code></td>
+              <td><code>(originalPrompt, previousOutput, validationError, schemaDescription) =&gt; string</code></td>
+              <td>Build a retry prompt that includes the model's previous invalid output, the validation errors, and the schema.</td>
+            </tr>
+            <tr>
+              <td><code>describeSchema</code></td>
+              <td><code>(schema: ZodType) =&gt; string</code></td>
+              <td>Convert a Zod schema into a human-readable string suitable for embedding in prompts.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Classes</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>OpenAIProvider</code></td>
+              <td>Built-in <code>AIProvider</code> backed by the OpenAI Chat Completions API. Accepts <code>OpenAIProviderConfig</code> for model, temperature, maxTokens, and apiKey.</td>
+            </tr>
+            <tr>
+              <td><code>AIValidationError</code></td>
+              <td>Custom <code>Error</code> subclass thrown when all retry attempts are exhausted. Carries <code>lastRawOutput</code>, <code>validationIssues</code>, and <code>attempts</code> for debugging.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Interfaces &amp; Types</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Kind</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>AIProvider</code></td>
+              <td><code>interface</code></td>
+              <td>The provider contract. Implement <code>complete(prompt: string): Promise&lt;string&gt;</code> to plug in any LLM backend.</td>
+            </tr>
+            <tr>
+              <td><code>RunStructuredPromptOptions&lt;T&gt;</code></td>
+              <td><code>interface</code></td>
+              <td>Options object for <code>runStructuredPrompt</code>. Properties: <code>prompt</code> (required), <code>schema</code> (required), <code>maxRetries</code> (default 3), <code>provider</code> (default OpenAIProvider).</td>
+            </tr>
+            <tr>
+              <td><code>OpenAIProviderConfig</code></td>
+              <td><code>interface</code></td>
+              <td>Config for <code>OpenAIProvider</code>. Properties: <code>apiKey?</code>, <code>model?</code> (default <code>"gpt-4o"</code>), <code>temperature?</code> (default <code>0</code>), <code>maxTokens?</code> (default <code>4096</code>).</td>
+            </tr>
+            <tr>
+              <td><code>JsonParseResult</code></td>
+              <td><code>type</code></td>
+              <td>Discriminated union: <code>{ ok: true; data: unknown }</code> or <code>{ ok: false; error: string }</code>.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- runStructuredPrompt -->
+    <section id="run-structured-prompt">
+      <h2>runStructuredPrompt(options)</h2>
+      <p>The main entry point. Sends a prompt to an AI model and returns a validated, strongly-typed result.</p>
+
+      <pre><code data-lang="typescript">function runStructuredPrompt&lt;TOutput&gt;(
+  options: RunStructuredPromptOptions&lt;TOutput&gt;,
+): Promise&lt;TOutput&gt;;</code></pre>
+
+      <h4>Options</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>prompt</code></td><td><code>string</code></td><td><em>required</em></td><td>Natural-language prompt to send to the AI</td></tr>
+            <tr><td><code>schema</code></td><td><code>ZodType&lt;TOutput&gt;</code></td><td><em>required</em></td><td>Zod schema describing the expected JSON shape</td></tr>
+            <tr><td><code>maxRetries</code></td><td><code>number</code></td><td><code>3</code></td><td>Number of repair retries if validation fails</td></tr>
+            <tr><td><code>provider</code></td><td><code>AIProvider</code></td><td><code>new OpenAIProvider()</code></td><td>Any object implementing the <code>AIProvider</code> interface</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>Return Value</h4>
+      <p><code>Promise&lt;TOutput&gt;</code> — the parsed and validated result, typed as <code>z.infer&lt;typeof schema&gt;</code>.</p>
+
+      <h4>Throws</h4>
+      <ul>
+        <li><code>AIValidationError</code> — when all attempts (initial + retries) are exhausted.</li>
+        <li>Standard errors from the underlying provider (network failures, auth errors, etc.).</li>
+      </ul>
+    </section>
+
+    <!-- AIProvider Interface -->
+    <section id="ai-provider">
+      <h2>AIProvider Interface</h2>
+      <pre><code data-lang="typescript">interface AIProvider {
+  complete(prompt: string): Promise&lt;string&gt;;
+}</code></pre>
+      <p>Implement this single method to plug in <strong>any</strong> LLM backend. The library never touches provider SDKs directly — only this interface.</p>
+    </section>
+
+    <!-- OpenAIProvider -->
+    <section id="openai-provider">
+      <h2>OpenAIProvider</h2>
+      <p>Built-in provider for the OpenAI Chat Completions API.</p>
+
+      <pre><code data-lang="typescript">import { OpenAIProvider } from "zuai";
+
+const provider = new OpenAIProvider({
+  apiKey: "sk-...",       // default: process.env.OPENAI_API_KEY
+  model: "gpt-4o",       // default: "gpt-4o"
+  temperature: 0,         // default: 0
+  maxTokens: 4096,        // default: 4096
+});</code></pre>
+
+      <h4>Configuration</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>apiKey</code></td><td><code>string</code></td><td><code>process.env.OPENAI_API_KEY</code></td><td>Your OpenAI API key. Falls back to the environment variable if omitted.</td></tr>
+            <tr><td><code>model</code></td><td><code>string</code></td><td><code>"gpt-4o"</code></td><td>The model identifier to use for completions.</td></tr>
+            <tr><td><code>temperature</code></td><td><code>number</code></td><td><code>0</code></td><td>Sampling temperature. <code>0</code> = deterministic output.</td></tr>
+            <tr><td><code>maxTokens</code></td><td><code>number</code></td><td><code>4096</code></td><td>Maximum number of tokens to generate per response.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- AIValidationError -->
+    <section id="ai-validation-error">
+      <h2>AIValidationError</h2>
+      <p>Custom error thrown when validation fails after all retry attempts.</p>
+
+      <pre><code data-lang="typescript">import { AIValidationError } from "zuai";
+
+try {
+  const result = await runStructuredPrompt({ ... });
+} catch (error) {
+  if (error instanceof AIValidationError) {
+    console.error(error.message);           // Human-readable summary
+    console.error(error.attempts);          // Total attempts made (e.g. 4)
+    console.error(error.lastRawOutput);     // The AI's last raw response
+    console.error(error.validationIssues);  // Array of Zod error strings
+  }
+}</code></pre>
+
+      <h4>Properties</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>message</code></td><td><code>string</code></td><td>Human-readable summary, e.g. <em>"AI output failed schema validation after 4 attempt(s)."</em></td></tr>
+            <tr><td><code>lastRawOutput</code></td><td><code>string</code></td><td>The exact raw text the AI returned on its final attempt.</td></tr>
+            <tr><td><code>validationIssues</code></td><td><code>ReadonlyArray&lt;string&gt;</code></td><td>Array of Zod error messages from the last failed validation.</td></tr>
+            <tr><td><code>attempts</code></td><td><code>number</code></td><td>Total number of attempts made (1 initial + retries).</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Utility Exports -->
+    <section id="utilities">
+      <h2>Utility Exports</h2>
+      <p>Exported for advanced usage, testing, or custom orchestration:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Export</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>safeJsonParse(raw: string)</code></td><td>Extracts and parses JSON from raw AI text. Returns <code>{ ok: true, data }</code> or <code>{ ok: false, error }</code>.</td></tr>
+            <tr><td><code>buildInitialPrompt(userPrompt, schemaDescription)</code></td><td>Builds the first prompt sent to the model.</td></tr>
+            <tr><td><code>buildRepairPrompt(originalPrompt, previousOutput, validationError, schemaDescription)</code></td><td>Builds the retry/repair prompt with error context.</td></tr>
+            <tr><td><code>describeSchema(schema: ZodType)</code></td><td>Converts a Zod schema into a human-readable description for prompt injection.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works">
+      <h2>How It Works</h2>
+
+      <div class="flow-diagram">┌─────────────┐
+│  Your Code   │
+│              │
+│  prompt +    │
+│  Zod schema  │
+└──────┬───────┘
+       │
+       ▼
+┌──────────────────────┐
+│  runStructuredPrompt  │
+│                       │
+│  1. Build prompt      │
+│  2. Call provider     │──────▶  AIProvider.complete()
+│  3. Parse JSON        │              │
+│  4. Validate (Zod)    │◀─────────────┘
+│                       │
+│  ✓ Valid? Return      │──────▶  Typed result ✨
+│                       │
+│  ✗ Invalid?           │
+│    Build repair       │
+│    prompt &amp; retry     │──────▶  (loop up to maxRetries)
+│                       │
+│  ✗ All failed?        │
+│    Throw error        │──────▶  AIValidationError
+└───────────────────────┘</div>
+
+      <ol>
+        <li><strong>Prompt construction</strong> — Your prompt + a JSON-Schema description of the Zod schema are combined into a system instruction.</li>
+        <li><strong>Provider call</strong> — The prompt is sent via <code>AIProvider.complete()</code>.</li>
+        <li><strong>Safe JSON parsing</strong> — The raw response is cleaned (markdown fences stripped, outermost JSON extracted) and parsed.</li>
+        <li><strong>Zod validation</strong> — The parsed object is validated against your schema with <code>schema.safeParse()</code>.</li>
+        <li><strong>Repair loop</strong> — On failure, a new prompt is built containing the previous output + error messages, asking the model to fix it. Repeats up to <code>maxRetries</code> times.</li>
+        <li><strong>Result or error</strong> — Either a typed result is returned, or <code>AIValidationError</code> is thrown with full diagnostics.</li>
+      </ol>
+    </section>
+
+    <!-- Examples -->
+    <section id="examples">
+      <h2>Examples</h2>
+
+      <h3>Complex Schema</h3>
+      <pre><code data-lang="typescript">import { z } from "zod";
+import { runStructuredPrompt } from "zuai";
+
+const RecipeSchema = z.object({
+  name: z.string(),
+  servings: z.number().int().positive(),
+  prepTimeMinutes: z.number().min(0),
+  ingredients: z.array(
+    z.object({
+      item: z.string(),
+      quantity: z.string(),
+      optional: z.boolean(),
+    }),
+  ),
+  steps: z.array(z.string()).min(1),
+  tags: z.array(z.string()),
+});
+
+type Recipe = z.infer&lt;typeof RecipeSchema&gt;;
+
+const recipe: Recipe = await runStructuredPrompt({
+  prompt: "Give me a recipe for banana bread.",
+  schema: RecipeSchema,
+});
+
+console.log(`${recipe.name} — serves ${recipe.servings}`);
+recipe.steps.forEach((step, i) =&gt; console.log(`  ${i + 1}. ${step}`));</code></pre>
+
+      <h3>Custom Retry Count</h3>
+      <pre><code data-lang="typescript">const result = await runStructuredPrompt({
+  prompt: "Generate a UUID, ISO timestamp, and a score between 0-100.",
+  schema: z.object({
+    uuid: z.string().uuid(),
+    timestamp: z.string().datetime(),
+    score: z.number().int().min(0).max(100),
+  }),
+  maxRetries: 5, // more retries for strict validation
+});</code></pre>
+
+      <h3>Using a Different Model</h3>
+      <pre><code data-lang="typescript">import { OpenAIProvider, runStructuredPrompt } from "zuai";
+
+const result = await runStructuredPrompt({
+  prompt: "Describe TypeScript in 3 bullet points.",
+  schema: z.object({
+    points: z.array(z.string()).length(3),
+  }),
+  provider: new OpenAIProvider({
+    model: "gpt-4o-mini",
+    temperature: 0.3,
+  }),
+});</code></pre>
+    </section>
+
+    <!-- Custom Provider -->
+    <section id="custom-provider">
+      <h2>Building a Custom Provider</h2>
+      <p>Implement the <code>AIProvider</code> interface to plug in any LLM. Here's an example with Anthropic:</p>
+
+      <pre><code data-lang="typescript">import Anthropic from "@anthropic-ai/sdk";
+import type { AIProvider } from "zuai";
+
+class AnthropicProvider implements AIProvider {
+  private client: Anthropic;
+  private model: string;
+
+  constructor(opts?: { apiKey?: string; model?: string }) {
+    this.client = new Anthropic({ apiKey: opts?.apiKey });
+    this.model = opts?.model ?? "claude-sonnet-4-20250514";
+  }
+
+  async complete(prompt: string): Promise&lt;string&gt; {
+    const response = await this.client.messages.create({
+      model: this.model,
+      max_tokens: 4096,
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    const block = response.content.find((b) =&gt; b.type === "text");
+    if (!block || block.type !== "text") throw new Error("No text response");
+    return block.text;
+  }
+}
+
+// Use it as a drop-in replacement:
+const result = await runStructuredPrompt({
+  prompt: "List 5 colours with hex codes.",
+  schema: ColourSchema,
+  provider: new AnthropicProvider(),
+});</code></pre>
+    </section>
+
+    <!-- Error Handling -->
+    <section id="error-handling">
+      <h2>Error Handling</h2>
+      <pre><code data-lang="typescript">import { runStructuredPrompt, AIValidationError } from "zuai";
+
+try {
+  const result = await runStructuredPrompt({
+    prompt: "Generate structured data.",
+    schema: MyStrictSchema,
+  });
+  console.log("Success:", result);
+} catch (error) {
+  if (error instanceof AIValidationError) {
+    console.error(`Failed after ${error.attempts} attempts`);
+    console.error("Last raw output:", error.lastRawOutput);
+    console.error("Validation issues:", error.validationIssues);
+  } else {
+    // Network error, auth error, etc.
+    throw error;
+  }
+}</code></pre>
+    </section>
+
+    <!-- Project Structure -->
+    <section id="project-structure">
+      <h2>Project Structure</h2>
+      <div class="tree">
+<span class="folder">src/</span>
+├── <span class="file">index.ts</span>                     <span class="comment"># Public API barrel export</span>
+├── <span class="folder">types/</span>
+│   └── <span class="file">provider.ts</span>              <span class="comment"># AIProvider interface</span>
+├── <span class="folder">errors/</span>
+│   └── <span class="file">ai-validation-error.ts</span>   <span class="comment"># AIValidationError class</span>
+├── <span class="folder">providers/</span>
+│   └── <span class="file">openai-provider.ts</span>       <span class="comment"># OpenAI implementation</span>
+├── <span class="folder">core/</span>
+│   ├── <span class="file">run-structured-prompt.ts</span>  <span class="comment"># Main entry function</span>
+│   └── <span class="file">validate-and-retry.ts</span>    <span class="comment"># Provider-agnostic retry loop</span>
+└── <span class="folder">utils/</span>
+    ├── <span class="file">json-parser.ts</span>           <span class="comment"># Safe JSON extraction &amp; parsing</span>
+    ├── <span class="file">prompt-builder.ts</span>        <span class="comment"># Prompt template construction</span>
+    └── <span class="file">schema-description.ts</span>    <span class="comment"># Zod → human-readable schema text</span></div>
+    </section>
+
+    <!-- Design Principles -->
+    <section id="design-principles">
+      <h2>Design Principles</h2>
+      <ul>
+        <li><strong>Separation of concerns</strong> — Provider logic, retry logic, JSON parsing, and prompt building are all independent modules.</li>
+        <li><strong>Interface over implementation</strong> — The core never imports OpenAI directly; it only depends on the <code>AIProvider</code> interface.</li>
+        <li><strong>No <code>any</code> types</strong> — Generics flow from the Zod schema through the entire call chain.</li>
+        <li><strong>Fail loudly</strong> — <code>AIValidationError</code> gives you everything you need to debug: the raw AI output, what went wrong, and how many attempts were made.</li>
+        <li><strong>Composable utilities</strong> — Every internal function is exported so you can build custom orchestration pipelines.</li>
+      </ul>
+    </section>
+
+    <!-- Contributing -->
+    <section id="contributing">
+      <h2>Contributing</h2>
+      <p>Contributions are welcome! Here's how to get started:</p>
+
+      <ol>
+        <li><strong>Fork</strong> the repo and clone it locally.</li>
+        <li><strong>Install dependencies:</strong>
+          <pre><code data-lang="bash">npm install</code></pre>
+        </li>
+        <li><strong>Create a branch</strong> for your feature or fix:
+          <pre><code data-lang="bash">git checkout -b feat/my-feature</code></pre>
+        </li>
+        <li><strong>Make your changes</strong> — keep code clean, typed, and free of <code>any</code>.</li>
+        <li><strong>Build &amp; type-check</strong> to make sure nothing is broken:
+          <pre><code data-lang="bash">npm run build
+npm run typecheck</code></pre>
+        </li>
+        <li><strong>Commit</strong> using <a href="https://www.conventionalcommits.org/">Conventional Commits</a>:
+          <pre><code data-lang="bash">git commit -m "feat: add support for streaming responses"</code></pre>
+        </li>
+        <li><strong>Push</strong> and open a <strong>Pull Request</strong> against <code>main</code>.</li>
+      </ol>
+
+      <h3>Guidelines</h3>
+      <ul>
+        <li>Follow the existing code style and project structure.</li>
+        <li>Keep PRs focused — one feature or fix per PR.</li>
+        <li>Add/update types for any new public API surfaces.</li>
+        <li>Update <code>README.md</code> if you add new exports or change behavior.</li>
+        <li>Update <code>CHANGELOG.md</code> under an <code>[Unreleased]</code> section.</li>
+        <li>No <code>any</code> types — use proper generics and type narrowing.</li>
+      </ul>
+
+      <h3>Ideas for Contributions</h3>
+      <ul>
+        <li>New providers (Anthropic, Gemini, Ollama, Mistral, etc.)</li>
+        <li>Streaming support</li>
+        <li>Token usage tracking</li>
+        <li>Retry strategy options (exponential backoff, etc.)</li>
+        <li>Unit tests &amp; integration tests</li>
+        <li>CI/CD pipeline setup</li>
+      </ul>
+
+      <p>Have a question or idea? <a href="https://github.com/dinethpiyumantha/zuai/issues">Open an issue</a> and let's discuss.</p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>MIT License &copy; 2026 <a href="https://github.com/dinethpiyumantha">Dineth Piyumantha</a></p>
+      <p>Built with care for the TypeScript ecosystem.</p>
+    </footer>
+
+  </div>
+</main>
+
+<!-- Back to top -->
+<a href="#hero" class="back-to-top" aria-label="Back to top">↑</a>
+
+<script src="script.js"></script>
+</body>
+</html>
