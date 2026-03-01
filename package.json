@@ -1,0 +1,58 @@
+{
+  "name": "zuai",
+  "version": "0.1.0",
+  "description": "TypeScript-first AI orchestration utility — get structured, Zod-validated JSON from any LLM",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dinethpiyumantha/zuai.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dinethpiyumantha/zuai/issues"
+  },
+  "homepage": "https://github.com/dinethpiyumantha/zuai#readme",
+  "keywords": [
+    "ai",
+    "llm",
+    "orchestration",
+    "zod",
+    "json",
+    "structured-output",
+    "openai",
+    "typescript",
+    "validation",
+    "schema"
+  ],
+  "author": "Dineth Piyumantha",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "openai": "^6.25.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.3",
+    "typescript": "^5.9.3"
+  }
+}

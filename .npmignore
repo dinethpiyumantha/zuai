@@ -1,0 +1,12 @@
+# Source & config (not needed in npm package)
+src/
+examples/
+tsconfig.json
+.gitignore
+.github/
+CHANGELOG.md
+
+# Dev files
+*.map
+coverage/
+.nyc_output/
