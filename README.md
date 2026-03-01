@@ -1,6 +1,18 @@
-# zuai
+<p align="center">
+  <img src="assets/zuai.svg" alt="zuai logo" width="280" />
+</p>
 
-**TypeScript-first AI orchestration utility for Node.js — get structured, Zod-validated JSON from any LLM.**
+<h1 align="center">zuai</h1>
+
+<p align="center">
+  <strong>TypeScript-first AI orchestration utility for Node.js — get structured, Zod-validated JSON from any LLM.</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/dinethpiyumantha/zuai/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License" /></a>
+  <a href="https://www.npmjs.com/package/zuai"><img src="https://img.shields.io/npm/v/zuai.svg" alt="npm version" /></a>
+  <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-strict-blue.svg" alt="TypeScript strict" /></a>
+</p>
 
 Send a natural-language prompt, define the shape you expect with a Zod schema, and get back a **fully typed**, **validated** result. If the AI returns malformed or invalid JSON, `zuai` automatically retries with a repair prompt — no manual parsing, no `any` types, no guesswork.
 
