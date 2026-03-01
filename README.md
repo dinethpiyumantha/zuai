@@ -441,6 +441,53 @@ src/
 
 ---
 
+## Contributing
+
+Contributions are welcome! Here's how to get started:
+
+1. **Fork** the repo and clone it locally.
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+3. **Create a branch** for your feature or fix:
+   ```bash
+   git checkout -b feat/my-feature
+   ```
+4. **Make your changes** — keep code clean, typed, and free of `any`.
+5. **Build & type-check** to make sure nothing is broken:
+   ```bash
+   npm run build
+   npm run typecheck
+   ```
+6. **Commit** using [Conventional Commits](https://www.conventionalcommits.org/):
+   ```bash
+   git commit -m "feat: add support for streaming responses"
+   ```
+7. **Push** and open a **Pull Request** against `main`.
+
+### Guidelines
+
+- Follow the existing code style and project structure.
+- Keep PRs focused — one feature or fix per PR.
+- Add/update types for any new public API surfaces.
+- Update `README.md` if you add new exports or change behavior.
+- Update `CHANGELOG.md` under an `[Unreleased]` section.
+- No `any` types — use proper generics and type narrowing.
+
+### Ideas for Contributions
+
+- New providers (Anthropic, Gemini, Ollama, Mistral, etc.)
+- Streaming support
+- Token usage tracking
+- Retry strategy options (exponential backoff, etc.)
+- Unit tests & integration tests
+- CI/CD pipeline setup
+
+Have a question or idea? [Open an issue](https://github.com/dinethpiyumantha/zuai/issues) and let's discuss.
+
+---
+
 ## License
 
 MIT — see [LICENSE](LICENSE) for details.
